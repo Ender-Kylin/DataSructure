@@ -80,3 +80,4 @@ void ScanfList(SqList *L)
         L->length++;
     }
 }
+
