@@ -10,13 +10,6 @@ using namespace std;
 typedef char VertexType;
 typedef int ArcType;
 
-// 临界矩阵表示的图
-typedef struct
-{
-    VertexType vexs[MVNum];     // 顶点
-    ArcType arcs[MVNum][MVNum]; // 邻接矩阵
-    int vexnum, arcnum;
-} AMGraph;
 
 // 邻接表节点
 typedef struct ArcNode
@@ -40,72 +33,38 @@ typedef struct
     int vexnum, arcnum;
 } ALGraph;
 
-// 搜索顶点在G当中的位置
-int LocateVex(AMGraph G, VertexType v)
+//搜索索引
+int LocateVex(ALGraph G, char v)
 {
     int i = 0;
-    for (i = 0; G.vexs[i]; i++)
+    for(i = 0; i < G.vexnum; ++i)
     {
-        if (v == G.vexs[i])
-        {
+        if(v == G.vertices[i].data)
             break;
-        }
     }
     return i;
 }
 
-// 采用邻接矩阵创建图
-void CreateUDN(AMGraph &G)
+//利用邻接表创建图
+void CreateUDG(ALGraph &G)
 {
-    cin >> G.vexnum >> G.arcnum; // 输入总顶点,总边数
-    for (int i = 0; i < G.vexnum; ++i)
+    cin >> G.vexnum>>G.arcnum;
+    for(int i = 0; i < G.vexnum;++i)
     {
-        cin >> G.vexs[i]; // 输入各个节点的信息
+        cin>>G.vertices[i].data;
+        G.vertices[i].firstarc = nullptr;
     }
-    for (int i = 0; i < G.vexnum; ++i)
+    for(int k = 0;k < G.arcnum; ++k)
     {
-        for (int j = 0; j < G.arcnum; ++j)
-        {
-            G.arcs[i][j] = MaxInt; // 初始化为MaxInt
-        }
-    }
-    for (int k = 0; k < G.arcnum; ++k)
-    {
-        VertexType v1, v2; // 边依附的两个顶点
-        ArcType w;         // 边的权值
-        cin >> v1 >> v2 >> w;
+        char v1, v2;
+        int data;
+        cin >> v1 >>v2>>data;
         int i = LocateVex(G, v1), j = LocateVex(G, v2);
-        G.arcs[i][j] = w;
-        G.arcs[j][i] = w;
-    }
-}
-
-// 将邻接矩阵转化为邻接表
-void AMToAL(AMGraph G, ALGraph &AL)
-{
-    AL.vexnum = G.vexnum;
-    AL.arcnum = G.arcnum;
-    // 初始化顶点表
-    for (int i = 0; i < AL.vexnum; ++i)
-    {
-        AL.vertices[i].data = G.vexs[i];
-        AL.vertices[i].firstarc = nullptr;
-    }
-
-    // 遍历邻接矩阵创建邻接表
-    for (int i = 0; i < G.vexnum; ++i)
-    {
-        for (int j = 0; j < G.vexnum; ++j)
-        {
-            if (G.arcs[i][j] != MaxInt)
-            {
-                ArcNode *node = new ArcNode;
-                node->adjvex = j;
-                node->info = G.arcs[i][j];
-                node->nextarc = AL.vertices[i].firstarc;
-                AL.vertices[i].firstarc = node;
-            }
-        }
+        ArcNode * p1 = new ArcNode, *p2 = new ArcNode;
+        p1->adjvex = j; p2->adjvex = i;
+        p1->info = p2->info = data;
+        p1->nextarc = G.vertices[i].firstarc;p2->nextarc = G.vertices[j].firstarc;
+        G.vertices[i].firstarc = p1;G.vertices[j].firstarc = p2;
     }
 }
 
@@ -126,10 +85,8 @@ void PrintALGraph(ALGraph AL)
 
 int main()
 {
-    AMGraph G;
     ALGraph AL;
-    CreateUDN(G);
-    AMToAL(G, AL);
+    CreateUDG(AL);
     PrintALGraph(AL);
-    return 0;
+    return 0;   
 }
