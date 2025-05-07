@@ -12,13 +12,13 @@ typedef int ArcType;
 
 typedef struct
 {
-    VertexType vexs[MVNum];     // 顶点
-    ArcType arcs[(MVNum*MVNum+MVNum) / 2]; // 邻接矩阵
-    int vexnum; //顶点数
-    int arcnum; //边数
+    VertexType vexs[MVNum];                    // 顶点
+    ArcType arcs[(MVNum * MVNum + MVNum) / 2]; // 邻接矩阵
+    int vexnum;                                // 顶点数
+    int arcnum;                                // 边数
 } AMGraph;
 
-//标记数组
+// 标记数组
 bool visited[MVNum];
 
 // 搜索顶点在G当中的位置
@@ -30,40 +30,40 @@ int LocateVex(AMGraph G, VertexType v)
         if (v == G.vexs[i])
         {
             break;
-            }
+        }
     }
     return i;
 }
 
-//获取邻接矩阵中的下表
+// 获取邻接矩阵中的下表
 int getIndex(int j, int i)
 {
     if (i < j)
     {
         swap(i, j);
     }
-    return i * (i - 1) / 2 + j; 
+    return i * (i - 1) / 2 + j;
 }
 
-//创建邻接矩阵
+// 创建邻接矩阵
 void CreateUDN(AMGraph &G)
 {
-    
-    cin >> G.arcnum>>G.vexnum;
+
+    cin >> G.arcnum >> G.vexnum;
     int a = G.vexnum * (G.vexnum + 1) / 2;
-    for(int i = 0;i < G.vexnum; ++i)
+    for (int i = 0; i < G.vexnum; ++i)
     {
         cin >> G.vexs[i];
     }
-    for(int i = 0; i < a; ++i)
+    for (int i = 0; i < a; ++i)
     {
         G.arcs[i] = 0;
     }
-    for(int k = 0; k < G.arcnum; ++k)
+    for (int k = 0; k < G.arcnum; ++k)
     {
-        VertexType v1,v2;
+        VertexType v1, v2;
         ArcType w;
-        cin>> v1>>v2>>w;
+        cin >> v1 >> v2 >> w;
         int i = LocateVex(G, v1), j = LocateVex(G, v2);
         G.arcs[getIndex(i, j)] = w;
     }
@@ -71,17 +71,16 @@ void CreateUDN(AMGraph &G)
 
 void DFS_AM(AMGraph G, int v)
 {
-    cout<<G.vexs[v]<<" ";
+    cout << G.vexs[v] << " ";
     visited[v] = true;
-    for(int w = 0;w < G.vexnum; ++w)
+    for (int w = 0; w < G.vexnum; ++w)
     {
-        if((G.arcs[getIndex(v, w)]!= 0 )&& !visited[w])//判断的是w
+        if ((G.arcs[getIndex(v, w)] != 0) && !visited[w]) // 判断的是w
         {
-            DFS_AM(G,w);
+            DFS_AM(G, w);
         }
-    } 
+    }
 }
-
 
 int main()
 {
