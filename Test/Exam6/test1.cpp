@@ -41,7 +41,7 @@ void CreateUDN(AMGraph &G)
     }
     for (int i = 0; i < G.vexnum; ++i)
     {
-        for (int j = 0; j < G.arcnum; ++j)
+        for (int j = 0; j < G.vexnum; ++j)
         {
             G.arcs[i][j] = MaxInt; // 初始化为MaxInt
         }
